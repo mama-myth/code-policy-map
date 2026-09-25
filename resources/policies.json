@@ -1,0 +1,81 @@
+[
+  {
+    "id": "SEC-LOG-001",
+    "title": "Sensitive Data Must Not Be Logged",
+    "category": "Secure Logging",
+    "description": "Passwords, authentication tokens, API keys, session identifiers, credentials, and other secrets must not be written to application logs, console output, debug output, or error messages.",
+    "riskExplanation": "Sensitive values in logs can be exposed through monitoring systems, support tools, error reporting, backups, or unauthorized log access.",
+    "sensitiveIdentifiers": [
+      "password",
+      "passwd",
+      "pwd",
+      "token",
+      "access_token",
+      "refresh_token",
+      "api_key",
+      "apiKey",
+      "secret",
+      "credential",
+      "credentials"
+    ],
+    "loggingFunctions": [
+      "print",
+      "logging.debug",
+      "logging.info",
+      "logging.warning",
+      "logging.error",
+      "logger.debug",
+      "logger.info",
+      "logger.warning",
+      "logger.error",
+      "logger.exception"
+    ],
+    "suggestedAction": "Remove the sensitive value from the log statement. If operational logging is necessary, log only a non-sensitive event, correlation ID, masked identifier, or user ID.",
+    "saferExample": "logger.info('Login attempt received for user_id=%s', user_id)",
+    "supportingRegulatoryContext": [
+      {
+        "framework": "GDPR",
+        "article": "Article 32",
+        "title": "Security of processing",
+        "relationship": "Supporting security context only. This is not a legal-compliance conclusion."
+      }
+    ],
+    "severity": "high"
+  },
+  {
+    "id": "SEC-LOG-002",
+    "title": "Personal Data in Logs Must Be Minimized",
+    "category": "Privacy-Aware Logging",
+    "description": "Personal data should not be written to logs unless it is necessary for a defined operational purpose and adequately protected.",
+    "riskExplanation": "Logs may be retained, exported, monitored, shared, or accessed by people who do not require the personal data for debugging or operations.",
+    "sensitiveIdentifiers": [
+      "email",
+      "phone",
+      "date_of_birth",
+      "dateOfBirth",
+      "address",
+      "full_name",
+      "fullName"
+    ],
+    "loggingFunctions": [
+      "print",
+      "logging.debug",
+      "logging.info",
+      "logging.warning",
+      "logger.debug",
+      "logger.info",
+      "logger.warning"
+    ],
+    "suggestedAction": "Consider using a non-sensitive internal user ID, event ID, masked value, or correlation ID instead of logging the full personal-data value.",
+    "saferExample": "logger.info('Profile update requested for user_id=%s', user_id)",
+    "supportingRegulatoryContext": [
+      {
+        "framework": "GDPR",
+        "article": "Article 5(1)(c)",
+        "title": "Data minimisation",
+        "relationship": "Potentially relevant where personal data is logged excessively or without a clear operational need. This is not a legal-compliance conclusion."
+      }
+    ],
+    "severity": "medium"
+  }
+]
