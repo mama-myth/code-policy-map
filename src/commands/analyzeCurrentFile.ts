@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { PolicyLoader } from '../policies/policyLoader';
 import { CodeContextDetector } from '../analyzer/codeContextDetector';
 import { PolicyDiagnosticProvider } from '../guidance/diagnosticProvider';
+import { PolicyTreeDataProvider } from '../views/policyTreeDataProvider';
 
 let outputChannel: vscode.OutputChannel | undefined;
 
@@ -14,7 +15,8 @@ function getOutputChannel(): vscode.OutputChannel {
 
 export function registerAnalyzeCurrentFileCommand(
     policyLoader: PolicyLoader,
-    diagnosticProvider?: PolicyDiagnosticProvider
+    diagnosticProvider?: PolicyDiagnosticProvider,
+    treeDataProvider?: PolicyTreeDataProvider
 ): vscode.Disposable {
     return vscode.commands.registerCommand('policyToCode.analyzeCurrentFile', async () => {
         const editor = vscode.window.activeTextEditor;
@@ -41,6 +43,10 @@ export function registerAnalyzeCurrentFileCommand(
 
         if (diagnosticProvider) {
             diagnosticProvider.updateDiagnostics(document, detectedContexts, policyLoader);
+        }
+
+        if (treeDataProvider) {
+            treeDataProvider.updateFindings(detectedContexts);
         }
 
         const channel = getOutputChannel();
@@ -73,7 +79,7 @@ export function registerAnalyzeCurrentFileCommand(
 
         channel.show(true);
         vscode.window.showWarningMessage(
-            `Policy-to-Code: Found ${detectedContexts.length} potential policy consideration(s) in current file. See Output channel and editor diagnostics.`
+            `Policy-to-Code: Found ${detectedContexts.length} potential policy consideration(s) in current file. See Policy-to-Code sidebar and Output channel.`
         );
     });
 }

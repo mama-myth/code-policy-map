@@ -5,6 +5,7 @@ import { registerShowTraceabilityCommand } from './commands/showTraceability';
 import { PolicyLoader } from './policies/policyLoader';
 import { PolicyDiagnosticProvider } from './guidance/diagnosticProvider';
 import { PolicyHoverProvider } from './guidance/hoverProvider';
+import { PolicyTreeDataProvider } from './views/policyTreeDataProvider';
 import { CodeContextDetector } from './analyzer/codeContextDetector';
 
 export async function activate(context: vscode.ExtensionContext) {
@@ -19,11 +20,17 @@ export async function activate(context: vscode.ExtensionContext) {
         vscode.languages.registerHoverProvider({ language: 'python', scheme: 'file' }, hoverProvider)
     );
 
-    // Auto-analyze active Python document on open or save
+    const treeDataProvider = new PolicyTreeDataProvider(policyLoader);
+    context.subscriptions.push(
+        vscode.window.registerTreeDataProvider('policyToCode.guidanceView', treeDataProvider)
+    );
+
+    // Auto-analyze active Python document on open, save, or change
     const analyzeDocument = (document: vscode.TextDocument) => {
         if (document && document.languageId === 'python') {
             const contexts = CodeContextDetector.analyzeDocument(document, policyLoader.getPolicies());
             diagnosticProvider.updateDiagnostics(document, contexts, policyLoader);
+            treeDataProvider.updateFindings(contexts);
         }
     };
 
@@ -47,11 +54,11 @@ export async function activate(context: vscode.ExtensionContext) {
         })
     );
 
-    vscode.window.showInformationMessage('Policy-to-Code Mapper extension active with diagnostics & hover guidance.');
+    vscode.window.showInformationMessage('Policy-to-Code Mapper extension active with sidebar view & traceability.');
 
-    context.subscriptions.push(registerAnalyzeCurrentFileCommand(policyLoader, diagnosticProvider));
+    context.subscriptions.push(registerAnalyzeCurrentFileCommand(policyLoader, diagnosticProvider, treeDataProvider));
     context.subscriptions.push(registerShowPolicyGuidanceCommand(policyLoader));
-    context.subscriptions.push(registerShowTraceabilityCommand());
+    context.subscriptions.push(registerShowTraceabilityCommand(policyLoader));
 }
 
 export function deactivate() {}
