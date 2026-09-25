@@ -19,7 +19,8 @@
   "activationEvents": [
     "onCommand:policyToCode.analyzeCurrentFile",
     "onCommand:policyToCode.showPolicyGuidance",
-    "onCommand:policyToCode.showTraceability"
+    "onCommand:policyToCode.showTraceability",
+    "onCommand:policyToCode.showFeedbackSummary"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -35,6 +36,10 @@
       {
         "command": "policyToCode.showTraceability",
         "title": "Policy-to-Code: View Traceability"
+      },
+      {
+        "command": "policyToCode.showFeedbackSummary",
+        "title": "Policy-to-Code: View Feedback Summary"
       }
     ],
     "viewsContainers": {

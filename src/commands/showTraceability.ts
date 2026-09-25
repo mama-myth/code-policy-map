@@ -2,8 +2,12 @@ import * as vscode from 'vscode';
 import { DetectedCodeContext } from '../analyzer/types';
 import { PolicyLoader } from '../policies/policyLoader';
 import { TraceabilityBuilder } from '../guidance/traceabilityBuilder';
+import { FeedbackStore, FeedbackAction } from '../feedback/feedbackStore';
 
-export function registerShowTraceabilityCommand(policyLoader: PolicyLoader): vscode.Disposable {
+export function registerShowTraceabilityCommand(
+    policyLoader: PolicyLoader,
+    feedbackStore?: FeedbackStore
+): vscode.Disposable {
     return vscode.commands.registerCommand(
         'policyToCode.showTraceability',
         async (contextItem?: DetectedCodeContext) => {
@@ -14,7 +18,6 @@ export function registerShowTraceabilityCommand(policyLoader: PolicyLoader): vsc
                 return;
             }
 
-            // Reveal source file line
             try {
                 const doc = await vscode.workspace.openTextDocument(contextItem.fileUri);
                 const editor = await vscode.window.showTextDocument(doc, {
@@ -43,6 +46,25 @@ export function registerShowTraceabilityCommand(policyLoader: PolicyLoader): vsc
             );
 
             panel.webview.html = TraceabilityBuilder.renderTraceabilityHtml(contextItem, policy);
+
+            if (feedbackStore) {
+                panel.webview.onDidReceiveMessage(
+                    async (message) => {
+                        if (message.command === 'feedback') {
+                            await feedbackStore.recordFeedback(
+                                message.policyId,
+                                message.patternId,
+                                message.action as FeedbackAction
+                            );
+                            vscode.window.showInformationMessage(
+                                `Policy-to-Code: Recorded local feedback '${message.action}' for ${message.policyId}.`
+                            );
+                        }
+                    },
+                    undefined,
+                    []
+                );
+            }
         }
     );
 }
