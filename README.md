@@ -69,7 +69,7 @@ To maintain clarity of scope and ensure educational/behavioral value:
 ## 7. Development Roadmap
 
 * [x] **Phase 0:** Extension Scaffold & Research Foundation (Metadata, Architecture, Commands, Docs)
-* [x] **Phase 1:** Local Policy Knowledge Base & Policy Types
+* [ ] **Phase 1:** Local Policy Knowledge Base & Policy Types
 * [ ] **Phase 2:** Analyze Current File Command & Pattern Detection Engine
 * [ ] **Phase 3:** Editor Diagnostics & Hover Guidance
 * [ ] **Phase 4:** Policy-to-Code Activity Bar Sidebar & Traceability Panel
