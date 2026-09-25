@@ -1,0 +1,75 @@
+{
+  "name": "policy-to-code-mapper",
+  "displayName": "Policy-to-Code Mapper",
+  "description": "Context-aware policy guidance for secure software development",
+  "version": "0.1.0",
+  "publisher": "policy-to-code",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/policy-to-code/policy-to-code-mapper"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Linters",
+    "Other",
+    "Security"
+  ],
+  "activationEvents": [
+    "onCommand:policyToCode.analyzeCurrentFile",
+    "onCommand:policyToCode.showPolicyGuidance",
+    "onCommand:policyToCode.showTraceability"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "policyToCode.analyzeCurrentFile",
+        "title": "Policy-to-Code: Analyze Current File"
+      },
+      {
+        "command": "policyToCode.showPolicyGuidance",
+        "title": "Policy-to-Code: Show Policy Guidance"
+      },
+      {
+        "command": "policyToCode.showTraceability",
+        "title": "Policy-to-Code: View Traceability"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "policyToCode",
+          "title": "Policy-to-Code",
+          "icon": "resources/icons/policy.svg"
+        }
+      ]
+    },
+    "views": {
+      "policyToCode": [
+        {
+          "id": "policyToCode.guidanceView",
+          "name": "Active Policy Guidance"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "18.x",
+    "@types/vscode": "^1.85.0",
+    "@vscode/test-electron": "^2.3.8",
+    "glob": "^10.3.10",
+    "mocha": "^10.2.0",
+    "typescript": "^5.3.3"
+  }
+}
