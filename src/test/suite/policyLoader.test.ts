@@ -8,7 +8,7 @@ suite('Policy Loader Test Suite', () => {
         const policiesPath = path.resolve(__dirname, '../../../resources/policies.json');
         const policies = await loader.loadPolicies(policiesPath);
 
-        assert.strictEqual(policies.length, 2);
+        assert.ok(policies.length >= 11);
 
         const secLog001 = loader.getPolicyById('SEC-LOG-001');
         assert.ok(secLog001);
@@ -19,6 +19,10 @@ suite('Policy Loader Test Suite', () => {
         assert.ok(secLog002);
         assert.strictEqual(secLog002?.title, 'Personal Data in Logs Must Be Minimized');
         assert.ok(secLog002?.sensitiveIdentifiers.includes('email'));
+
+        const secInj001 = loader.getPolicyById('SEC-INJ-001');
+        assert.ok(secInj001);
+        assert.strictEqual(secInj001?.title, 'SQL Queries Must Use Parameterized Input');
     });
 
     test('Handles non-existent policy file gracefully', async () => {

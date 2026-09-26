@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { DetectedCodeContext } from './types';
 import { LoggingDetector } from './loggingDetector';
+import { OwaspDetector } from './owaspDetector';
 import { PolicyMatcher } from '../policies/policyMatcher';
 import { PolicyRecord } from '../policies/policyTypes';
 
@@ -15,6 +16,7 @@ export class CodeContextDetector {
             return results;
         }
 
+        // 1. Detect Logging & Personal Data Logging Patterns
         const lineCount = document.lineCount;
 
         for (let i = 0; i < lineCount; i++) {
@@ -55,6 +57,10 @@ export class CodeContextDetector {
                 }
             }
         }
+
+        // 2. Detect OWASP Top 10 Security Policy Patterns
+        const owaspResults = OwaspDetector.detectOwaspPatterns(document, policies);
+        results.push(...owaspResults);
 
         return results;
     }

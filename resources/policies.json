@@ -77,5 +77,185 @@
       }
     ],
     "severity": "medium"
+  },
+  {
+    "id": "SEC-LOG-003",
+    "title": "Silent Exception Handling Must Be Avoided",
+    "category": "OWASP A09: Logging Failures",
+    "description": "Empty exception handlers or bare exception passes suppress operational failures and impede security incident response.",
+    "riskExplanation": "Silent failures hide security incidents, unauthorized access attempts, or system degradation from monitoring tools.",
+    "sensitiveIdentifiers": [],
+    "loggingFunctions": [],
+    "suggestedAction": "Log exception context using logger.exception() or handle specific exceptions appropriately.",
+    "saferExample": "try:\n    perform_action()\nexcept Exception as e:\n    logger.exception('Failed to perform action: %s', str(e))",
+    "supportingRegulatoryContext": [
+      {
+        "framework": "OWASP Top 10",
+        "article": "A09:2021",
+        "title": "Security Logging and Monitoring Failures",
+        "relationship": "Supporting security monitoring best practice."
+      }
+    ],
+    "severity": "medium"
+  },
+  {
+    "id": "SEC-CRY-001",
+    "title": "Hardcoded Secrets and API Tokens Must Be Avoided",
+    "category": "OWASP A02: Cryptographic Failures",
+    "description": "Plaintext secret keys, passwords, API tokens, or JWT signing secrets hardcoded in source code risk exposure via version control.",
+    "riskExplanation": "Hardcoded credentials in source control can be extracted by unauthorized users, external auditors, or automated repository scrapers.",
+    "sensitiveIdentifiers": [],
+    "loggingFunctions": [],
+    "suggestedAction": "Load credentials dynamically from environment variables or a secure key management system.",
+    "saferExample": "api_key = os.getenv('API_KEY')",
+    "supportingRegulatoryContext": [
+      {
+        "framework": "OWASP Top 10",
+        "article": "A02:2021",
+        "title": "Cryptographic Failures",
+        "relationship": "Supporting secret management guidance."
+      }
+    ],
+    "severity": "critical"
+  },
+  {
+    "id": "SEC-CRY-002",
+    "title": "Weak Cryptographic Hash Functions Must Not Be Used",
+    "category": "OWASP A02: Cryptographic Failures",
+    "description": "Obsolete hash algorithms like MD5 or SHA-1 are vulnerable to collision attacks and must not be used for security purposes.",
+    "riskExplanation": "Attackers can generate cryptographic hash collisions to forge digital signatures, tokens, or pass validation checks.",
+    "sensitiveIdentifiers": [],
+    "loggingFunctions": [],
+    "suggestedAction": "Use strong cryptographic hash functions such as SHA-256 or secure password hashing algorithms like bcrypt or argon2.",
+    "saferExample": "digest = hashlib.sha256(data).hexdigest()",
+    "supportingRegulatoryContext": [
+      {
+        "framework": "NIST",
+        "article": "SP 800-131A",
+        "title": "Transitions: Recommendation for Transitioning the Use of Cryptographic Algorithms",
+        "relationship": "Supporting cryptographic standard."
+      }
+    ],
+    "severity": "high"
+  },
+  {
+    "id": "SEC-INJ-001",
+    "title": "SQL Queries Must Use Parameterized Input",
+    "category": "OWASP A03: Injection",
+    "description": "Constructing SQL statements using string concatenation or f-strings creates critical SQL injection vulnerabilities.",
+    "riskExplanation": "Unsanitized user input concatenated into SQL queries allows attackers to execute arbitrary database commands or exfiltrate data.",
+    "sensitiveIdentifiers": [],
+    "loggingFunctions": [],
+    "suggestedAction": "Use parameterized queries or ORMs to pass user input separately from SQL command syntax.",
+    "saferExample": "cursor.execute('SELECT * FROM users WHERE username = %s', (username,))",
+    "supportingRegulatoryContext": [
+      {
+        "framework": "OWASP Top 10",
+        "article": "A03:2021",
+        "title": "Injection",
+        "relationship": "Supporting application defense context."
+      }
+    ],
+    "severity": "critical"
+  },
+  {
+    "id": "SEC-INJ-002",
+    "title": "Dynamic Shell Execution Must Be Avoided",
+    "category": "OWASP A03: Injection",
+    "description": "Executing shell commands via os.system or subprocess with shell=True introduces command injection risks.",
+    "riskExplanation": "Attackers supplying metacharacters (e.g. ';', '|', '`') in inputs can execute arbitrary OS commands.",
+    "sensitiveIdentifiers": [],
+    "loggingFunctions": [],
+    "suggestedAction": "Pass command arguments as a list without shell invocation, or use higher-level Python APIs.",
+    "saferExample": "subprocess.run(['ping', '-c', '1', host], check=True)",
+    "supportingRegulatoryContext": [
+      {
+        "framework": "OWASP Top 10",
+        "article": "A03:2021",
+        "title": "Injection",
+        "relationship": "Supporting system integrity guidance."
+      }
+    ],
+    "severity": "critical"
+  },
+  {
+    "id": "SEC-CFG-001",
+    "title": "Debug Mode Must Not Be Enabled in Production Configuration",
+    "category": "OWASP A05: Security Misconfiguration",
+    "description": "Enabling framework debug modes (e.g. app.run(debug=True) or DEBUG=True) exposes interactive debuggers and sensitive stack traces.",
+    "riskExplanation": "Interactive debuggers can allow remote code execution or reveal sensitive internal environment variables.",
+    "sensitiveIdentifiers": [],
+    "loggingFunctions": [],
+    "suggestedAction": "Ensure debug mode is disabled by default and configured dynamically via environment variables.",
+    "saferExample": "app.run(debug=os.getenv('FLASK_DEBUG', 'False').lower() == 'true')",
+    "supportingRegulatoryContext": [
+      {
+        "framework": "OWASP Top 10",
+        "article": "A05:2021",
+        "title": "Security Misconfiguration",
+        "relationship": "Supporting secure configuration context."
+      }
+    ],
+    "severity": "high"
+  },
+  {
+    "id": "SEC-DES-001",
+    "title": "Insecure Object Deserialization Must Be Avoided",
+    "category": "OWASP A08: Data Integrity Failures",
+    "description": "Deserializing untrusted data with pickle or unsafe PyYAML loaders can trigger arbitrary code execution.",
+    "riskExplanation": "Pickle streams can execute arbitrary Python payloads during unpickling prior to application inspection.",
+    "sensitiveIdentifiers": [],
+    "loggingFunctions": [],
+    "suggestedAction": "Use safe data exchange formats such as JSON or safe PyYAML parsers (yaml.safe_load).",
+    "saferExample": "data = json.loads(payload) # or yaml.safe_load(stream)",
+    "supportingRegulatoryContext": [
+      {
+        "framework": "OWASP Top 10",
+        "article": "A08:2021",
+        "title": "Software and Data Integrity Failures",
+        "relationship": "Supporting data integrity context."
+      }
+    ],
+    "severity": "critical"
+  },
+  {
+    "id": "SEC-NET-001",
+    "title": "Outbound HTTP Requests Must Be Validated (SSRF)",
+    "category": "OWASP A10: SSRF",
+    "description": "Executing HTTP requests to user-supplied URLs without validation allows Server-Side Request Forgery (SSRF).",
+    "riskExplanation": "Attackers can manipulate outbound requests to access internal cloud metadata services (e.g. 169.254.169.254) or private microservices.",
+    "sensitiveIdentifiers": [],
+    "loggingFunctions": [],
+    "suggestedAction": "Validate and whitelist target domain names before issuing outbound network calls.",
+    "saferExample": "if is_allowed_domain(target_url):\n    response = requests.get(target_url)",
+    "supportingRegulatoryContext": [
+      {
+        "framework": "OWASP Top 10",
+        "article": "A10:2021",
+        "title": "Server-Side Request Forgery (SSRF)",
+        "relationship": "Supporting network security guidance."
+      }
+    ],
+    "severity": "high"
+  },
+  {
+    "id": "SEC-PTH-001",
+    "title": "File Paths Must Be Canonicalized to Prevent Path Traversal",
+    "category": "OWASP A01: Broken Access Control",
+    "description": "Concatenating user input into file paths allows attackers to access files outside intended directories.",
+    "riskExplanation": "Directory traversal sequences (e.g. '../../etc/passwd') allow unauthorized reading or writing of system files.",
+    "sensitiveIdentifiers": [],
+    "loggingFunctions": [],
+    "suggestedAction": "Canonicalize target paths using pathlib.Path and verify the target remains inside the base directory.",
+    "saferExample": "target = (base_dir / user_input).resolve()\nif base_dir in target.parents:\n    with open(target) as f: ...",
+    "supportingRegulatoryContext": [
+      {
+        "framework": "OWASP Top 10",
+        "article": "A01:2021",
+        "title": "Broken Access Control",
+        "relationship": "Supporting access control guidance."
+      }
+    ],
+    "severity": "high"
   }
 ]
