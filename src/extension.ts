@@ -22,13 +22,22 @@ export async function activate(context: vscode.ExtensionContext) {
 
     const hoverProvider = new PolicyHoverProvider(policyLoader);
     context.subscriptions.push(
-        vscode.languages.registerHoverProvider({ language: 'python', scheme: 'file' }, hoverProvider)
+        vscode.languages.registerHoverProvider(
+            [
+                { language: 'python', scheme: 'file' },
+                { pattern: '**/*.py', scheme: 'file' }
+            ],
+            hoverProvider
+        )
     );
 
     const codeActionProvider = new PolicyCodeActionProvider(policyLoader);
     context.subscriptions.push(
         vscode.languages.registerCodeActionsProvider(
-            { language: 'python', scheme: 'file' },
+            [
+                { language: 'python', scheme: 'file' },
+                { pattern: '**/*.py', scheme: 'file' }
+            ],
             codeActionProvider,
             { providedCodeActionKinds: PolicyCodeActionProvider.providedCodeActionKinds }
         )

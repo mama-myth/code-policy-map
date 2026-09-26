@@ -6,16 +6,20 @@ import { GuidanceBuilder } from './guidanceBuilder';
 export class PolicyHoverProvider implements vscode.HoverProvider {
     constructor(private readonly policyLoader: PolicyLoader) {}
 
-    public provideHover(
+    public async provideHover(
         document: vscode.TextDocument,
         position: vscode.Position,
         token: vscode.CancellationToken
-    ): vscode.ProviderResult<vscode.Hover> {
-        if (document.languageId !== 'python') {
+    ): Promise<vscode.Hover | null> {
+        if (document.languageId !== 'python' && !document.fileName.endsWith('.py')) {
             return null;
         }
 
-        const policies = this.policyLoader.getPolicies();
+        let policies = this.policyLoader.getPolicies();
+        if (policies.length === 0) {
+            policies = await this.policyLoader.loadPolicies();
+        }
+
         if (policies.length === 0) {
             return null;
         }
