@@ -17,6 +17,8 @@
     "Security"
   ],
   "activationEvents": [
+    "onLanguage:python",
+    "onView:policyToCode.guidanceView",
     "onCommand:policyToCode.analyzeCurrentFile",
     "onCommand:policyToCode.showPolicyGuidance",
     "onCommand:policyToCode.showTraceability",
