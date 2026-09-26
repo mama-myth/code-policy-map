@@ -39,9 +39,9 @@ export async function activate(context: vscode.ExtensionContext) {
         vscode.window.registerTreeDataProvider('policyToCode.guidanceView', treeDataProvider)
     );
 
-    // Auto-analyze active Python document on open, save, or change
+    // Auto-analyze Python document on open, save, active tab change, or live edit
     const analyzeDocument = (document: vscode.TextDocument) => {
-        if (document && document.languageId === 'python') {
+        if (document && (document.languageId === 'python' || document.fileName.endsWith('.py'))) {
             const rawContexts = CodeContextDetector.analyzeDocument(document, policyLoader.getPolicies());
             // Filter out findings dismissed by the user locally
             const activeContexts = rawContexts.filter(
@@ -66,6 +66,10 @@ export async function activate(context: vscode.ExtensionContext) {
     );
 
     context.subscriptions.push(
+        vscode.workspace.onDidChangeTextDocument((e) => analyzeDocument(e.document))
+    );
+
+    context.subscriptions.push(
         vscode.window.onDidChangeActiveTextEditor((editor) => {
             if (editor) {
                 analyzeDocument(editor.document);
@@ -73,7 +77,7 @@ export async function activate(context: vscode.ExtensionContext) {
         })
     );
 
-    vscode.window.showInformationMessage('Policy-to-Code Mapper extension active with Quick Fix code actions.');
+    vscode.window.showInformationMessage('Policy-to-Code Mapper extension active.');
 
     context.subscriptions.push(registerAnalyzeCurrentFileCommand(policyLoader, diagnosticProvider, treeDataProvider));
     context.subscriptions.push(registerShowPolicyGuidanceCommand(policyLoader));

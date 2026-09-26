@@ -12,11 +12,11 @@ export class CodeContextDetector {
     ): DetectedCodeContext[] {
         const results: DetectedCodeContext[] = [];
 
-        if (document.languageId !== 'python') {
+        // Support python languageId and files ending in .py
+        if (document.languageId !== 'python' && !document.fileName.endsWith('.py')) {
             return results;
         }
 
-        // 1. Detect Logging & Personal Data Logging Patterns
         const lineCount = document.lineCount;
 
         for (let i = 0; i < lineCount; i++) {
@@ -58,7 +58,6 @@ export class CodeContextDetector {
             }
         }
 
-        // 2. Detect OWASP Top 10 Security Policy Patterns
         const owaspResults = OwaspDetector.detectOwaspPatterns(document, policies);
         results.push(...owaspResults);
 

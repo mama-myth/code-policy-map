@@ -9,7 +9,7 @@ export class OwaspDetector {
     ): DetectedCodeContext[] {
         const results: DetectedCodeContext[] = [];
 
-        if (document.languageId !== 'python') {
+        if (document.languageId !== 'python' && !document.fileName.endsWith('.py')) {
             return results;
         }
 

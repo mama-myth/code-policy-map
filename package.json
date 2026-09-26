@@ -18,6 +18,7 @@
   ],
   "activationEvents": [
     "onLanguage:python",
+    "workspaceContains:**/*.py",
     "onView:policyToCode.guidanceView",
     "onCommand:policyToCode.analyzeCurrentFile",
     "onCommand:policyToCode.showPolicyGuidance",
